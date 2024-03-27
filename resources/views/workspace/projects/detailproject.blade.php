@@ -1,6 +1,6 @@
 @php
-    $title = "Proyek";
-    $pretitle = "proyek/detail";
+    $title = 'Proyek';
+    $pretitle = 'proyek/detail';
 @endphp
 
 @extends('template')
@@ -8,7 +8,7 @@
 @section('body')
     <div class="row">
         <div class="col">
-            <span class="fs-2"><a href="{{ route('workspace.projects') }}" style="text-decoration: none; color:black;">
+            <span class="fs-2"><a href="{{ route('workspace.projects') }}" style="text-decoration: none;">
                     Project </a>/ <strong>{{ $project->project_name }}</strong></span>
         </div>
     </div>
@@ -24,6 +24,14 @@
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{{ route('workspace.projects.edit', $project->id) }}">Edit Project</a>
                 </li>
+                @if ($project->status == 'ENDED')
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                            data-bs-target="#modalStart-{{ $project->id }}">Unend Project</a></li>
+                @else
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                            data-bs-target="#modalEnd-{{ $project->id }}">End Project</a>
+                    </li>
+                @endif
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
                         data-bs-target="#modalDelete-{{ $project->id }}">Delete Project</a></li>
             </ul>
@@ -77,8 +85,8 @@
                             Transactions</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a href="#tabs-file-7" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab"
-                            tabindex="-1"><!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                        <a href="#tabs-file-7" class="nav-link" data-bs-toggle="tab" aria-selected="false"
+                            role="tab" tabindex="-1"><!-- Download SVG icon from http://tabler-icons.io/i/user -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bell-filled"
                                 width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -126,8 +134,8 @@
                                 <h3>Billing Schedule</h3>
                             </div>
                             <div class="col-auto">
-                                <a href="{{ route('workspace.projects.edit', $project->id) }}" class="text-secondary fs-3"
-                                    style="text-decoration: none;">
+                                <a href="{{ route('workspace.projects.edit', $project->id) }}"
+                                    class="text-secondary fs-3" style="text-decoration: none;">
                                     <i class="bi bi-pencil-fill text-secondary me-2"></i>Edit
                                 </a>
                             </div>
@@ -289,6 +297,88 @@
                                 </div>
                                 <div class="col">
                                     <button class="btn btn-danger w-100" data-bs-dismiss="modal">Delete</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end project butotn --}}
+    <div class="modal modal-blur fade" id="modalEnd-{{ $project->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24"
+                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M12 9v4"></path>
+                        <path
+                            d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z">
+                        </path>
+                        <path d="M12 16h.01"></path>
+                    </svg>
+                    <h3>Are you sure?</h3>
+                    <div class="text-secondary">Do you really want to end project
+                        {{ $project->project_name }}?</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <form action="{{ route('workspace.projects.endproject', ['id' => $project->id]) }}"
+                                method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="col">
+                                    <a href="#" class="btn w-100 mb-2" data-bs-dismiss="modal">Cancel</a>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-danger w-100" data-bs-dismiss="modal">End Project</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalStart-{{ $project->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24"
+                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M12 9v4"></path>
+                        <path
+                            d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z">
+                        </path>
+                        <path d="M12 16h.01"></path>
+                    </svg>
+                    <h3>Are you sure?</h3>
+                    <div class="text-secondary">Do you really want to unend project
+                        {{ $project->project_name }}?</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <form action="{{ route('workspace.projects.unendproject', ['id' => $project->id]) }}"
+                                method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="col">
+                                    <a href="#" class="btn w-100 mb-2" data-bs-dismiss="modal">Cancel</a>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-danger w-100" data-bs-dismiss="modal">UnEnd Project</button>
                                 </div>
                             </form>
                         </div>

@@ -8,6 +8,7 @@ use App\Models\Quotation;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\ProjectModel;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Auth;
@@ -51,8 +52,7 @@ class QuotationController extends Controller
             ->select('quotations.*', 'clients.name as name')
             ->orderBy('quotations.created_at', 'desc')
             ->paginate(5);  
-        // $quotations = Contract::where('user_id', Auth::id())->where('contract_name', 'like', '%' . $request->search . '%')->paginate(5);
-        return view('workspace.quotations.index', compact('quotations', 'clients'));
+        return view('workspace.quotation.index', compact('quotations', 'clients'));
         }
             
         return view('workspace.quotation.index', compact('quotations', 'clients'));
@@ -404,6 +404,18 @@ class QuotationController extends Controller
 
         $quotation->id_project = $project->id;
         $quotation->save();
+
+         // include transaction data
+         $transaction = new Transaction();
+         $transaction->id_project = $quotation->id_project;
+         $transaction->id_user = Auth::user()->id;
+         $transaction->created_date = date('Y-m-d');
+         $transaction->amount = $quotation->deposit_amount;
+         $transaction->description = "Deposit for " . $quotation->quotation_name;
+         $transaction->source = Client::find($quotation->id_client)->name;
+         $transaction->category = "Deposit";
+         $transaction->is_income = 1;
+         $transaction->save();
 
         // update service id project
         $service = Service::where('id_quotation', $id)->first();

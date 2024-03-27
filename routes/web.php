@@ -99,6 +99,7 @@ Route::group(['prefix' => 'workspace', 'middleware' => ['auth'], 'as' => 'worksp
 
     Route::get('/clients/checklimit/{id}', [ClientController::class, 'checklimit'])->name('clients.checklimit');
 
+    // project
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
     Route::delete('/projects/delete/{id}', [ProjectController::class, 'destroy'])->name('projects.delete');
     Route::get('/projects/show/{id}', [ProjectController::class, 'show'])->name('projects.show');
@@ -109,6 +110,8 @@ Route::group(['prefix' => 'workspace', 'middleware' => ['auth'], 'as' => 'worksp
     Route::get('/projects/detail/{id}', [ProjectController::class, 'detail'])->name('projects.detail');
     Route::get('/projects/edit/{id}', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/update/{id}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::put('/projects/status/endproject/{id}', [ProjectController::class, 'endproject'])->name('projects.endproject');
+    Route::put('/projects/status/unendproject/{id}', [ProjectController::class, 'unendproject'])->name('projects.unendproject');
     
     // quotations
     Route::get('/quotation', [QuotationController::class, 'index'])->name('quotation');

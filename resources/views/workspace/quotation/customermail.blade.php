@@ -38,7 +38,7 @@
                 <p><strong>Require Deposit:</strong> {{ $quotation->require_deposit ? 'Yes' : 'No' }}</p>
                 @if ($quotation->require_deposit)
                     <p><strong>Deposit Percentage:</strong> {{ $quotation->deposit_percentage }}%</p>
-                    <p><strong>Deposit Amount:</strong> ${{ $quotation->deposit_amount }}</p>
+                    <p><strong>Deposit Amount:</strong> @currency($quotation->deposit_amount)</p>
                     <p><strong>Client Agrees to Deposit:</strong> {{ $quotation->client_agrees_deposit ? 'Yes' : 'No' }}</p>
                 @endif
             </div>

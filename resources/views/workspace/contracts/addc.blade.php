@@ -110,7 +110,7 @@
                             {{-- make two col for summary service price and submit button --}}
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class="form-label">Summary Service Price: <span id="totalCost">0</span></label>
+                                    <label class="form-label">Summary Service Price: <span id="totalCost">@currency(0)</span></label>
                                 </div>
                             </div>
                         </div>

@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\ServiceDetail;
 use App\Models\User;
 use App\Models\ProjectModel;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -51,8 +52,8 @@ class ContractController extends Controller
         $contracts = DB::table('contracts')
             ->where('contracts.id_user', $userId) // Filter berdasarkan user_id
             ->where('contracts.contract_name', 'like', '%' . $request->search . '%')
-            ->orWhere('contracts.status', 'like', '%' . $request->search . '%')
-            ->orWhere('clients.name', 'like', '%' . $request->search . '%')
+            // ->orWhere('contracts.status', 'like', '%' . $request->search . '%')
+            // ->orWhere('clients.name', 'like', '%' . $request->search . '%')
             ->join('clients', 'contracts.id_client', '=', 'clients.id')
             ->select('contracts.*', 'clients.name as name')
             ->orderBy('contracts.created_at', 'desc')
@@ -407,6 +408,18 @@ class ContractController extends Controller
 
         $contract->id_project = $contract->id;
         $contract->save();
+
+        // include transaction data
+        $transaction = new Transaction();
+        $transaction->id_project = $contract->id_project;
+        $transaction->id_user = Auth::user()->id;
+        $transaction->created_date = date('Y-m-d');
+        $transaction->amount = $contract->deposit_amount;
+        $transaction->description = "Deposit for " . $contract->contract_name;
+        $transaction->source = Client::find($contract->id_client)->name;
+        $transaction->category = "Deposit";
+        $transaction->is_income = 1;
+        $transaction->save();
 
         // update service id project
         $service = Service::where('id_contract', $id)->first();

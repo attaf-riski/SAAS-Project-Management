@@ -92,6 +92,7 @@ class ProjectController extends Controller
         $data['status'] = 'ACTIVE';
         $data['id_client'] = $request->id_client;
         $data['user_id'] = $user->id;
+        $data['final_invoice_date'] = $request->final_invoice_date;
 
         if (!$data) {
             $error = "You have failed add new projeect.\n" . strval($validator->errors());
@@ -111,14 +112,14 @@ class ProjectController extends Controller
                 // create each subscription detail
                 $serviceNames = $request->input('service_name');
                 $servicePrices = $request->input('service_price');
-                $serviceFeeMethods = $request->input('service_fee_method');
+                $serviceFeeMethods = 'FIXED';
                 $serviceDescriptions = $request->input('service_description');
                 foreach ($serviceNames as $index => $serviceName) {
                     $serviceDetail = new ServiceDetail();
                     $serviceDetail->id_service = $service->id;
                     $serviceDetail->service_name = $serviceName;
                     $serviceDetail->price = $servicePrices[$index];
-                    $serviceDetail->pay_method = $serviceFeeMethods[$index];
+                    $serviceDetail->pay_method = $serviceFeeMethods;
                     $serviceDetail->description = $serviceDescriptions[$index];
                     $serviceDetail->save();
                 }
@@ -346,6 +347,25 @@ class ProjectController extends Controller
         Alert::success('Success Message', 'You have successfully changed the name.');
         return redirect()->back();
 
+    }
+
+    public function endproject($id)
+    {
+        $project = ProjectModel::find($id);
+        $project->status = 'ENDED';
+        $project->save();
+
+        Alert::success('Success Message', 'You have successfully end the project.');
+        return redirect()->route('workspace.projects');
+    }
+
+    public function unendproject($id){
+        $project = ProjectModel::find($id);
+        $project->status = 'ACTIVE';
+        $project->save();
+
+        Alert::success('Success Message', 'You have successfully unend the project.');
+        return redirect()->route('workspace.projects');
     }
 
 }

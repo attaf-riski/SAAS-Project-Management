@@ -375,6 +375,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $project = ProjectModel::find($invoice->id_project);
         $invoice->status = 'PAID';
+        $invoice->save();
 
         // create new transaction
         $transaction = new Transaction();

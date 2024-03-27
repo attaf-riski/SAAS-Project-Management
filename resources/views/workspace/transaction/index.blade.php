@@ -100,7 +100,7 @@
                                     <td>{{ $transaction->source }}</td>
                                     <td>{{ $transaction->category }}</td>
                                     <td>{{ $transaction->created_at }}</td>
-                                    <td>{{ $transaction->amount }}</td>
+                                    <td>@currency($transaction->amount)</td>
                                     <td class="d-flex gap-3">
                                         <a href="#" class="btn btn-secondary" data-bs-toggle="modal"
                                             data-bs-target="#modal_edit-{{ $transaction->id }}">

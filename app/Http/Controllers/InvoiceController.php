@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = Auth::id();
 
@@ -40,6 +40,33 @@ class InvoiceController extends Controller
             if (Carbon::now()->greaterThan($invoice->due_date)) {
                 $invoice->status = 'Inactive'; // Jika melebihi, ubah status menjadi 'Inactive'
             }
+        }
+
+        // if the request has data_count_shows
+        if ($request->input('data_count_shows') != null) {
+            $dataCountShows = $request->input('data_count_shows');
+            $invoices = DB::table('invoices')
+                ->where('invoices.user_id', $userId)
+                ->join('project_models', 'invoices.id_project', '=', 'project_models.id')
+                ->join('clients', 'invoices.id_client', '=', 'clients.id')
+                ->select('invoices.*', 'project_models.project_name as project_name', 'clients.name as name')
+                ->orderBy('invoices.created_at', 'desc')
+                ->paginate($dataCountShows);
+            return view('workspace.invoices.index', compact('invoices'));
+        }
+        // if the request has search
+        if ($request->input('search') != null) {
+            $search = $request->input('search');
+            $invoices = DB::table('invoices')
+                ->where('invoices.user_id', $userId)
+                ->join('project_models', 'invoices.id_project', '=', 'project_models.id')
+                ->join('clients', 'invoices.id_client', '=', 'clients.id')
+                ->select('invoices.*', 'project_models.project_name as project_name', 'clients.name as name')
+                ->where('project_models.project_name', 'like', '%' . $search . '%')
+                ->orWhere('clients.name', 'like', '%' . $search . '%')
+                ->orderBy('invoices.created_at', 'desc')
+                ->paginate(5);
+            return view('workspace.invoices.index', compact('invoices'));
         }
 
         $project = ProjectModel::all();
@@ -297,7 +324,7 @@ class InvoiceController extends Controller
             Alert::error('Failed Message', 'You have failed to delete invoice.');
             return redirect()->route('workspace.invoice');
         } else {
-            
+
             try {
                 $invoice->delete();
             } catch (\Throwable $th) {

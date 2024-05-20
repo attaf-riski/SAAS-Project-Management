@@ -69,7 +69,11 @@ class DashboardController extends Controller
             ->where('id_plan', '<>', 1)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();
-        $conversionRate7Days = ($userPremium7Days / $userRegister7Days) * 100;
+        if($userRegister7Days == 0){
+            $conversionRate7Days = 0 * 100;
+        }else{
+            $conversionRate7Days = ($userPremium7Days / $userRegister7Days) * 100;            
+        }
 
         // dd($conversionRate7Days, $conversionRate30Days, $conversionRate3Months);
 

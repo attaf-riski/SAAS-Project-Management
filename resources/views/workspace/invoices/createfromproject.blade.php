@@ -37,7 +37,7 @@
                     </form>
                 </div>
             </div>
-            <form action="{{ route('workspace.quotation.editemail', $invoice->id) }}" method="post" class="mt-4">
+            <form action="{{ route('workspace.invoice.sendemail', $invoice->id) }}" method="get" class="mt-4">
                 @csrf
                 <div class="card card-lg">
                     <div class="card-body">

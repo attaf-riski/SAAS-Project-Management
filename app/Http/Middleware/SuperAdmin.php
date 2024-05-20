@@ -26,7 +26,7 @@ class SuperAdmin
         if (Auth::user()->id_role == 2) {
             return redirect()->route('login');
         }
-        
+
         if (Auth::user()->id_role == 3) {
             return redirect()->route('login');
         }

@@ -21,7 +21,8 @@ class AdminTranscationController extends Controller
         ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
         ->select('transaction_admins.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
         ->paginate(5);
-        $freelances = User::where('id_role', 3)->get();
+        // get id role 3 or 4
+        $freelances = User::where('id_role', 3)->orWhere('id_role', 4)->get();
         $subscriptions = Subscription::all();
         return view('admin.transaction.index', compact('transactions', 'freelances', 'subscriptions'));
     }

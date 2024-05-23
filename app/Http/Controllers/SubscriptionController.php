@@ -22,6 +22,7 @@ class SubscriptionController extends Controller
             ->join('users', 'subscriptions.id_user', '=', 'users.id')
             ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
             ->select('subscriptions.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
+            ->orderBy('subscriptions.created_at', 'desc')
             ->paginate(5);
         $freelances = User::where('id_role', 3)->get();
         $plans = Plan::all();

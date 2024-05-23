@@ -15,11 +15,13 @@ class AdminTranscationController extends Controller
 {
     public function index()
     {
+        // desc
         $transactions = DB::table('transaction_admins')
         ->join('subscriptions', 'transaction_admins.id_subscription', '=', 'subscriptions.id')
         ->join('users', 'subscriptions.id_user', '=', 'users.id')
         ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
         ->select('transaction_admins.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
+        ->orderBy('transaction_admins.created_at', 'desc')
         ->paginate(5);
         // get id role 3 or 4
         $freelances = User::where('id_role', 3)->orWhere('id_role', 4)->get();

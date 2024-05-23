@@ -117,7 +117,7 @@ class ClientController extends Controller
             'region' => ['required'],
         ]);
         if ($validator->fails()) {
-            Alert::error('Failed Message', 'You have failed to edit client.')->withErrors($validator);
+            Alert::error('Failed Message', 'You have failed to edit client.'.$validator->errors());
             return redirect()->back();
         }
         $data = [

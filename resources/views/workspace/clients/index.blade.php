@@ -141,7 +141,7 @@
                                             </div>
                                             <div class="row mt-2">
                                                 <div class="col-lg-6">
-                                                      <label class="form-label">State</label>
+                                                      <label class="form-label">Country</label>
                                                       <input type="text" name="state" class="form-control" placeholder="Masukan Negaramu">
                                                   </div>
                                                   <div class="col-lg-6">

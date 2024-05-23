@@ -212,8 +212,24 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success', 'Succesfully Logout');
     }
-    public function index()
+    public function index(Request $request)
     {
+        
+
+
+         // if the request has data_count_shows
+         if ($request->input('data_count_shows') != null) {
+            $data_count_shows = $request->input('data_count_shows');
+            $users = User::where('id_role', 3)->orWhere('id_role', 4)->paginate($data_count_shows);
+            return view('admin.user.index', compact('users'));
+        }
+        // if the request has search
+        if ($request->input('search') != null) {
+            $search = $request->input('search');
+            $users = User::where('id_role', 3)->orWhere('id_role', 4)->where('fullname', 'like', '%' . $search . '%')->paginate();
+            return view('admin.user.index', compact('users'));
+        }
+
         // Mengambil data pengguna dengan ID role 3 atau 4
         $users = User::where('id_role', 3)->orWhere('id_role', 4)->paginate();
         return view('admin.user.index', compact('users'));

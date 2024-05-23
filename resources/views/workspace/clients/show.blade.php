@@ -187,7 +187,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">State</label>
+                                            <label class="form-label">Country</label>
                                             <input type="text" class="form-control" name="state"
                                                 placeholder="State" value="{{ $client->state }}">
                                         </div>

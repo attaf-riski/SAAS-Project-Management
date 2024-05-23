@@ -231,9 +231,8 @@ php artisan migrate
 
 Next, run the seeder to add the required data
 ```bash
-php artisan db:seed Role
-php artisan db:seed AllSeeder
-```
+php artisan db:seed
+````
 
 When everything is done, then run this application as follows
 ```bash

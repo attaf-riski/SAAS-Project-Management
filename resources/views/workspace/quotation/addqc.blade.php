@@ -101,8 +101,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label required">Final Invoice Date</label>
-                                <label for="invoice_type">Invoice Type</label>
+                                <label for="invoice_type" class="form-label required">Invoice Type</label>
                                 <select class="form-select" name="invoice_type" id="invoice_type">
                                     <option value="once">Once</option>
                                     <option value="hourly">Hourly</option>

@@ -20,7 +20,15 @@
             </div>
             <div class="mb-3">
                 <label for="message" class="form-label">Message:</label>
-                <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
+                <textarea class="form-control" id="message" name="message" rows="6" required>
+Kepada Yth. Green Group,
+Saya tertarik dengan proyek anda,"Freelance Video Editor for @andreo_cr".
+
+Saya sangat antusias untuk mempelajari lebih lanjut tentang kebutuhan Anda dan bagaimana saya dapat membantu Anda mencapai tujuan Anda.Saya telah meninjau detail proyek Anda dan menyiapkan proposal untuk pertimbangan Anda.
+
+Detail dari proposal terlampir. Apabila anda tertarik anda dapat membalasa email ini atau chat pada platform [nama platform anda menemukan proyek]
+
+                </textarea>
             </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Send Email</button>

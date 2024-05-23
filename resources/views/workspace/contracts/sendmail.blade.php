@@ -20,7 +20,11 @@
             </div>
             <div class="mb-3">
                 <label for="message" class="form-label">Message:</label>
-                <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
+                <textarea class="form-control" id="message" name="message" rows="6" required>
+Kepada Yth. {{$client->name}},
+Dalam surel ini, kami lampirkan Kontrak untuk proyek {{$contract->contract_name}}.
+Terlampir: Kontrak Freelancer
+                </textarea>
             </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Send Email</button>

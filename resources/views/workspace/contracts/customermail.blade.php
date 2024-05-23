@@ -6,22 +6,26 @@
 @extends('clienttemplate')
 
 @section('body')
-    <script src="//cdn.ckeditor.com/4.24.0-lts/basic/ckeditor.js"></script>
     <div class="row justify-content-center">
         <form action={{"http://127.0.0.1:8000/workspace/contract/accepted/".strVal($contract->id)}}>
             @csrf
-            <p>{{ $msg }}</p>
-            <div class="row mb-3">
-                <div class="col">
-                    <h3 class="card-title">Review Contract</h3>
+            <p>{!! html_entity_decode( $msg ) !!}</p>
+            <div class="col">
+                <h3 class="card-title">Contract</h3>
+            </div>
+            <div class="col d-flex justify-content-end mb-3">
+                <div class="mr-2">
+                    <a class="btn btn-danger"
+                            href="{{"http://127.0.0.1:8000/workspace/contract/dismissed/".strVal($contract->id)}}"
+                            target="_blank" rel="noopener noreferrer">
+                        Reject Project
+                    </a>
                 </div>
-                <div class="col d-flex justify-content-end">
-                    <a class="mr-3" href={{"http://127.0.0.1:8000/workspace/contract/dismissed/".strVal($contract->id)}} target="_blank" rel="noopener noreferrer">
-                        <button class="btn btn-danger">Reject Contract</button></a>
-                    <a href={{"http://127.0.0.1:8000/workspace/contract/accepted/".strVal($contract->id)}} target="_blank" rel="noopener noreferrer">
-                        <button class="btn btn-primary">Accept Contract</button></a>
-                    
-                </div>
+                <a class="btn btn-primary"
+                        href="{{"http://127.0.0.1:8000/workspace/contract/accepted/".strVal($contract->id)}}"
+                        target="_blank" rel="noopener noreferrer">
+                    Accept Project
+                </a>
             </div>
             <div class="card">
                 <div class="card-body">
@@ -34,7 +38,7 @@
                         @else
                             <p><strong>End Date:</strong> Open Date</p>
                         @endif
-                        <p><strong>Final Invoice Date:</strong> {{ $contract->final_invoice_date }}</p>
+                        <p><strong>Invoice Type:</strong> {{ $contract->invoice_type }}</p>
                         <p><strong>Require Deposit:</strong> {{ $contract->require_deposit ? 'Yes' : 'No' }}</p>
                         @if ($contract->require_deposit)
                             <p><strong>Deposit Percentage:</strong> {{ $contract->deposit_percentage }}%</p>
@@ -105,12 +109,4 @@
             </div>
         </form>
     </div>
-    <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#contract'))
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
 @endsection

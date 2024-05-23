@@ -7,9 +7,7 @@
 
 @section('body')
     <div class="container">
-        <p>
-            {{ $msg }}
-        </p>
+        <p>{!! html_entity_decode( $msg ) !!}</p>
         <div class="row mb-3">
             <div class="col">
                 <h3 class="card-title">Quotation</h3>
@@ -17,11 +15,13 @@
             <div class="col d-flex justify-content-end">
                 {{-- place in the left --}}
                 <!-- Tombol Submit -->
-                <a href={{"http://127.0.0.1:8000/workspace/quotation/dismissed/".strVal($quotation->id)}} target="_blank" rel="noopener noreferrer">
-                    <button class="btn btn-danger">Reject Project</button></a>
+               <div class="mr-2">
+                   <a href={{"http://127.0.0.1:8000/workspace/quotation/dismissed/".strVal($quotation->id)}} target="_blank" rel="noopener noreferrer">
+                       <button class="btn btn-danger">Reject Project</button></a>
+               </div>
                 <a href={{"http://127.0.0.1:8000/workspace/quotation/accepted/".strVal($quotation->id)}} target="_blank" rel="noopener noreferrer">
                     <button class="btn btn-primary">Accept Project</button></a>
-                
+
             </div>
         </div>
         <div class="card">
@@ -34,7 +34,7 @@
                 @else
                     <p><strong>End Date:</strong> Open Date</p>
                 @endif
-                <p><strong>Final Invoice Date:</strong> {{ $quotation->final_invoice_date }}</p>
+                <p><strong>Invoice Type:</strong> {{ $quotation->invoice_type }}</p>
                 <p><strong>Require Deposit:</strong> {{ $quotation->require_deposit ? 'Yes' : 'No' }}</p>
                 @if ($quotation->require_deposit)
                     <p><strong>Deposit Percentage:</strong> {{ $quotation->deposit_percentage }}%</p>

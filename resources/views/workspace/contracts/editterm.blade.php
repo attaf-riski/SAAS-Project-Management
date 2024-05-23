@@ -30,7 +30,7 @@
                         @else
                             <p><strong>End Date:</strong> Open Date</p>
                         @endif
-                        <p><strong>Final Invoice Date:</strong> {{ $contract->final_invoice_date }}</p>
+                        <p><strong>Invoice Type:</strong> {{ $contract->invoice_type }}</p>
                         <p><strong>Require Deposit:</strong> {{ $contract->require_deposit ? 'Yes' : 'No' }}</p>
                         @if ($contract->require_deposit)
                             <p><strong>Deposit Percentage:</strong> {{ $contract->deposit_percentage }}%</p>

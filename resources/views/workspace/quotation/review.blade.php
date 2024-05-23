@@ -7,7 +7,7 @@
 
 @extends('template')
 @section('body')
-<div class="container">   
+<div class="container">
     <div class="row mb-3">
         <div class="col">
             <h3 class="card-title">Review Quotation</h3>
@@ -30,9 +30,9 @@
             @if ($quotation->end_date)
                 <p><strong>End Date:</strong> {{ $quotation->end_date }}</p>
             @else
-                <p><strong>End Date:</strong> Open Date</p>                
+                <p><strong>End Date:</strong> Open Date</p>
             @endif
-            <p><strong>Final Invoice Date:</strong> {{ $quotation->final_invoice_date }}</p>
+            <p><strong>Invoice Type:</strong> {{ $quotation->invoice_type }}</p>
             <p><strong>Require Deposit:</strong> {{ $quotation->require_deposit ? 'Yes' : 'No' }}</p>
             @if ($quotation->require_deposit)
                 <p><strong>Deposit Percentage:</strong> {{ $quotation->deposit_percentage }}%</p>

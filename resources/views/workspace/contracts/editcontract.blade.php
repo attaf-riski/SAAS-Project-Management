@@ -99,8 +99,15 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label required">Final Invoice Date</label>
-                                <input type="date" class="form-control" name="final_invoice_date" value="{{ $contract->final_invoice_date }}">
+                                <label class="form-label required">Invoice Type</label>
+                                <select class="form-select" name="invoice_type" id="invoice_type">
+                                    <option value="once" {{ $contract->invoice_type === 'once' ? 'selected' : '' }}>Once</option>
+                                    <option value="hourly" {{ $contract->invoice_type === 'hourly' ? 'selected' : '' }}>Hourly</option>
+                                    <option value="daily" {{ $contract->invoice_type === 'daily' ? 'selected' : '' }}>Daily</option>
+                                    <option value="weekly" {{ $contract->invoice_type === 'weekly' ? 'selected' : '' }}>Weekly</option>
+                                    <option value="monthly" {{ $contract->invoice_type === 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                    <option value="custom" {{ $contract->invoice_type === 'custom' ? 'selected' : '' }}>Custom</option>
+                                </select>
                             </div>
                         </fieldset>
                         {{-- ganti jadi dinamis aja --}}

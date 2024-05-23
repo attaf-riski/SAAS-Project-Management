@@ -44,7 +44,7 @@ class ContractController extends Controller
             ->join('clients', 'contracts.id_client', '=', 'clients.id')
             ->select('contracts.*', 'clients.name as name')
             ->orderBy('contracts.created_at', 'desc')
-            ->paginate($dataCountShows);   
+            ->paginate($dataCountShows);
             return view('workspace.contracts.index', compact('contracts', 'clients'));
         }
                // if the request has search
@@ -57,11 +57,11 @@ class ContractController extends Controller
             ->join('clients', 'contracts.id_client', '=', 'clients.id')
             ->select('contracts.*', 'clients.name as name')
             ->orderBy('contracts.created_at', 'desc')
-            ->paginate(5);  
+            ->paginate(5);
         // $contracts = Contract::where('user_id', Auth::id())->where('contract_name', 'like', '%' . $request->search . '%')->paginate(5);
         return view('workspace.contracts.index', compact('contracts', 'clients'));
         }
-            
+
         return view('workspace.contracts.index', compact('contracts', 'clients'));
     }
 
@@ -80,7 +80,7 @@ class ContractController extends Controller
             'id_client' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date',
-            'final_invoice_date' => 'required|date',
+            'invoice_type' => 'required',
             // Add more validation rules as needed
         ]);
 
@@ -102,11 +102,11 @@ class ContractController extends Controller
         }else{
             $contract->contract_pdf = 'DEFAULT';
         }
-        
+
         $contract->id_client = $request->input('id_client');
         $contract->id_user = Auth::id();
         $contract->id_project = 1;
-        $contract->final_invoice_date = $request->input('final_invoice_date');
+        $contract->invoice_type = $request->input('invoice_type');
 
 
         // deposit
@@ -150,7 +150,7 @@ class ContractController extends Controller
         // create each subscription detail
         $serviceNames = $request->input('service_name');
         $servicePrices = $request->input('service_price');
-        $serviceFeeMethods = 'FIXED';
+        $serviceFeeMethods = $request->input('invoice_type');
         $serviceDescriptions = $request->input('service_description');
         foreach ($serviceNames as $index => $serviceName) {
             $serviceDetail = new ServiceDetail();
@@ -218,7 +218,7 @@ class ContractController extends Controller
             'id_client' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date',
-            'final_invoice_date' => 'required|date',
+            'invoice_type' => 'required',
             // Add more validation rules as needed
         ]);
 
@@ -237,7 +237,7 @@ class ContractController extends Controller
         $contract->start_date = $request->input('start_date');
         $contract->end_date = $request->input('end_date');
         $contract->id_client = $request->input('id_client');
-        $contract->final_invoice_date = $request->input('final_invoice_date');
+        $contract->invoice_type = $request->input('invoice_type');
 
         // Update the user ID only if necessary
         if ($contract->id_user !== Auth::id()) {
@@ -275,17 +275,17 @@ class ContractController extends Controller
         // Save the updated contract
         $contract->save();
 
-        // ambil service 
+        // ambil service
         $service = Service::where('id_contract', $contract->id)->first();
 
-        // hapus yang lama 
+        // hapus yang lama
         ServiceDetail::where('id_service', $service->id)->delete();
 
         // masukkan yang baru
         // create each subscription detail
         $serviceNames = $request->input('service_name');
         $servicePrices = $request->input('service_price');
-        $serviceFeeMethods = 'FIXED';
+        $serviceFeeMethods = $request->input('invoice_type');
         $serviceDescriptions = $request->input('service_description');
         foreach ($serviceNames as $index => $serviceName) {
             $serviceDetail = new ServiceDetail();

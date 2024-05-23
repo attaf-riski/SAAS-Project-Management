@@ -143,7 +143,7 @@ class TestingSeeder extends Seeder
                 'snap_token' => $faker->uuid, // Placeholder for payment gateway token
                 'quotation_pdf' => $faker->word . '.pdf', // Placeholder for quotation PDF filename
                 'id_client' => rand(1, 10), // Assuming 10 clients exist (adjust if different)
-                'id_user' => 1, // Replace with actual user ID
+                'id_user' => 2, // Replace with actual user ID
                 'id_project' => rand(1, 10), // Assuming 10 projects exist (adjust if different)
                 'require_deposit' => rand(0, 1), // Random boolean for deposit requirement
                 'deposit_amount' => $faker->optional()->randomFloat(2, 0, 1000), // Might be null
@@ -201,7 +201,7 @@ class TestingSeeder extends Seeder
         // Generate 10 transaction records
         for ($i = 0; $i < 10; $i++) {
             $transactionData = [
-                'id_user' => 1, // User ID 1 (replace if needed)
+                'id_user' => 2, // User ID 1 (replace if needed)
                 'id_project' => rand(1, 10), // Assuming 10 projects exist (adjust if different)
                 // Set other foreign keys (id_invoice, id_payment) to null for this example
                 'id_invoice' => null,
@@ -229,7 +229,7 @@ class TestingSeeder extends Seeder
                 'contract_pdf' => $faker->word . '.pdf', // Placeholder for contract PDF filename
                 'id_client' => rand(1, 10), // Assuming 10 clients exist (adjust if different)
                 'id_project' => rand(1, 10), // Assuming 10 projects exist (adjust if different)
-                'id_user' => 1, // Replace with actual user ID
+                'id_user' => 2, // Replace with actual user ID
                 'require_deposit' => rand(0, 1), // Random boolean for deposit requirement
                 'deposit_amount' => $faker->optional()->randomFloat(2, 0, 1000), // Might be null
                 'deposit_percentage' => $faker->optional()->randomFloat(2, 0, 100), // Might be null

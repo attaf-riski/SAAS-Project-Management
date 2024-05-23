@@ -18,7 +18,7 @@
                         <div class="text-muted">
                             Search:
                             <div class="ms-2 d-inline-block">
-                                <input type="text" id="search" class="form-control" aria-label="Search Project" placeholder="find project by project name..."> 
+                                <input type="text" id="search" class="form-control" aria-label="Search Project" placeholder="find project by project name...">
                             </div>
                         </div>
                         <div class="ms-auto me-3">
@@ -142,15 +142,6 @@
 
                             </select>
                         </div>
-                        {{-- <div class="mb-3">
-            <label for="freelance">Nama Freelance</label>
-            <select class="form-control mt-1" name="user_id" id="user_id">
-              <option value="">Select freelance</option>
-              @foreach ($freelances as $freelance)
-              <option value="{{ $freelance->id }}">{{ $freelance->fullname }}</option>
-              @endforeach
-          </select>
-           </div> --}}
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
@@ -197,7 +188,7 @@
                         $('.datatable').html(newTable.html());
                     }
                 });
-                
+
             });
         });
     </script>

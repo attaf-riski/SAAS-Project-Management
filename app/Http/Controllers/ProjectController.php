@@ -74,7 +74,7 @@ class ProjectController extends Controller
             'id_client' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date',
-            'final_invoice_date' => 'required|date',
+            'invoice_type' => 'required',
             'service_name' => 'required|array',
         ]);
 
@@ -92,7 +92,7 @@ class ProjectController extends Controller
         $data['status'] = 'ACTIVE';
         $data['id_client'] = $request->id_client;
         $data['user_id'] = $user->id;
-        $data['final_invoice_date'] = $request->final_invoice_date;
+        $data['invoice_type'] = $request->invoice_type;
 
         if (!$data) {
             $error = "You have failed add new projeect.\n" . strval($validator->errors());
@@ -112,7 +112,7 @@ class ProjectController extends Controller
                 // create each subscription detail
                 $serviceNames = $request->input('service_name');
                 $servicePrices = $request->input('service_price');
-                $serviceFeeMethods = 'FIXED';
+                $serviceFeeMethods = $request->input('invoice_type');
                 $serviceDescriptions = $request->input('service_description');
                 foreach ($serviceNames as $index => $serviceName) {
                     $serviceDetail = new ServiceDetail();
@@ -158,7 +158,7 @@ class ProjectController extends Controller
             'id_client' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date',
-            'final_invoice_date' => 'required|date',
+            'invoice_type' => 'required',
             'service_name' => 'required|array',
         ]);
 
@@ -173,7 +173,7 @@ class ProjectController extends Controller
         $project->project_name = $request->project_name;
         $project->id_client = $request->id_client;
         $project->start_date = $request->start_date;
-        $project->final_invoice_date = $request->final_invoice_date;
+        $project->invoice_type = $request->invoice_type;
 
         if ($request->has('end_date')) {
             $project->end_date = $request->input('end_date');
@@ -222,7 +222,7 @@ class ProjectController extends Controller
         // create each subscription detail
         $serviceNames = $request->input('service_name');
         $servicePrices = $request->input('service_price');
-        $serviceFeeMethods = 'FIXED';
+        $serviceFeeMethods = $request->input('invoice_type');
         $serviceDescriptions = $request->input('service_description');
         foreach ($serviceNames as $index => $serviceName) {
             $serviceDetail = new ServiceDetail();
@@ -267,7 +267,7 @@ class ProjectController extends Controller
             $invoice->save();
         }
 
-        // contract 
+        // contract
         $contract = Contract::where('id_project', $id)->first();
         if ($contract) {
             // change id project that connected to contract to 1

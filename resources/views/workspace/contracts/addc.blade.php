@@ -100,8 +100,15 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label required">Final Invoice Date</label>
-                                <input type="date" class="form-control" name="final_invoice_date">
+                                <label for="invoice_type">Invoice Type</label>
+                                <select class="form-select" name="invoice_type" id="invoice_type">
+                                    <option value="once">Once</option>
+                                    <option value="hourly">Hourly</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="custom">Custom</option>
+                                </select>
                             </div>
                         </fieldset>
 

@@ -150,7 +150,7 @@
                             </div>
                             <div class="d-flex justify-content-start align-items-center">
                                 <p class="me-5 fs-3">I Will Bill</p>
-                                <p class="fs-3">Once</p>
+                                <p class="fs-3">{{$project->invoice_type}}</p>
                             </div>
                         </div>
                         <hr>
@@ -173,9 +173,10 @@
                                 </div>
                                 <div class="col-auto">
                                     <h1 class="text-secondary">Rp. {{ $SD->price }}</h1>
+                                </div>
+                            </div>
                         @endforeach
                     </div>
-                </div>
                 <hr>
                 <div class="row">
                     <div class="col">
@@ -189,7 +190,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
             <div class="tab-pane" id="tabs-invoices" role="tabpanel">
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable table-hover">

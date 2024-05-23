@@ -31,7 +31,7 @@ class QuotationController extends Controller
             ->paginate(5);
 
         // Mengambil klien yang dimiliki oleh pengguna yang sedang login
-        $clients = Client::where('user_id', $userId)->get();    
+        $clients = Client::where('user_id', $userId)->get();
 
             if ($request->input('data_count_shows') != null) {
                 $dataCountShows = $request->input('data_count_shows');
@@ -51,10 +51,10 @@ class QuotationController extends Controller
             ->join('clients', 'quotations.id_client', '=', 'clients.id')
             ->select('quotations.*', 'clients.name as name')
             ->orderBy('quotations.created_at', 'desc')
-            ->paginate(5);  
+            ->paginate(5);
         return view('workspace.quotation.index', compact('quotations', 'clients'));
         }
-            
+
         return view('workspace.quotation.index', compact('quotations', 'clients'));
     }
 
@@ -78,7 +78,7 @@ class QuotationController extends Controller
             'id_client' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date',
-            'final_invoice_date' => 'required|date',
+            'invoice_type' => 'required',
             // Add more validation rules as needed
         ]);
 
@@ -98,7 +98,7 @@ class QuotationController extends Controller
         $quotation->id_client = $request->input('id_client');
         $quotation->id_user = Auth::id();
         $quotation->id_project = 1;
-        $quotation->final_invoice_date = $request->input('final_invoice_date');
+        $quotation->invoice_type = $request->input('invoice_type');
 
 
         // deposit
@@ -142,7 +142,7 @@ class QuotationController extends Controller
         // create each subscription detail
         $serviceNames = $request->input('service_name');
         $servicePrices = $request->input('service_price');
-        $serviceFeeMethods = 'FIXED';
+        $serviceFeeMethods = $request->input('invoice_type');
         $serviceDescriptions = $request->input('service_description');
         foreach ($serviceNames as $index => $serviceName) {
             $serviceDetail = new ServiceDetail();
@@ -226,7 +226,7 @@ class QuotationController extends Controller
             'id_client' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date',
-            'final_invoice_date' => 'required|date',
+            'invoice_type' => 'required',
             // Add more validation rules as needed
         ]);
 
@@ -238,7 +238,7 @@ class QuotationController extends Controller
         $quotation->start_date = $request->input('start_date');
         $quotation->end_date = $request->input('end_date');
         $quotation->id_client = $request->input('id_client');
-        $quotation->final_invoice_date = $request->input('final_invoice_date');
+        $quotation->invoice_type = $request->input('invoice_type');
 
         // Update the user ID only if necessary
         if ($quotation->id_user !== Auth::id()) {
@@ -276,17 +276,17 @@ class QuotationController extends Controller
         // Save the updated contract
         $quotation->save();
 
-        // ambil service 
+        // ambil service
         $service = Service::where('id_quotation', $quotation->id)->first();
 
-        // hapus yang lama 
+        // hapus yang lama
         ServiceDetail::where('id_service', $service->id)->delete();
 
         // masukkan yang baru
         // create each subscription detail
         $serviceNames = $request->input('service_name');
         $servicePrices = $request->input('service_price');
-        $serviceFeeMethods = 'FIXED';
+        $serviceFeeMethods = $request->input('invoice_type');
         $serviceDescriptions = $request->input('service_description');
         foreach ($serviceNames as $index => $serviceName) {
             $serviceDetail = new ServiceDetail();

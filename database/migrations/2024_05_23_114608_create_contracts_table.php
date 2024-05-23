@@ -27,7 +27,7 @@ return new class extends Migration
             $table->decimal('deposit_amount', 10)->nullable();
             $table->decimal('deposit_percentage', 10)->nullable();
             $table->boolean('client_agrees_deposit')->default(false);
-            $table->enum('invoice_type',array('once','hourly','daily','weekly','monthly'))->nullable();
+            $table->enum('invoice_type',array('once','hourly','daily','weekly','monthly','custom'))->nullable();
         });
     }
 

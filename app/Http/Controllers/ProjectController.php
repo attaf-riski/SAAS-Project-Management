@@ -213,11 +213,10 @@ class ProjectController extends Controller
         }
 
         // Create each subscription
-        $service = new Service();
-        $service->id_project = $project->id;
-        $service->id_quotation = 1;
-        $service->id_contract = 1;
-        $service->save();
+        $service = Service::where('id_project', $id)->first();
+
+        // hapus yang lama
+        ServiceDetail::where('id_service', $service->id)->delete();
 
         // create each subscription detail
         $serviceNames = $request->input('service_name');

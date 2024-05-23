@@ -15,8 +15,29 @@
                     <h3 class="card-title">Search Filter</h3>
                 </div>
                 <div class="card-body border-bottom py-3">
+                    <div>
+                        <p>This Month Income & Outcome</p>
+                        <p>Income: @currency($income)</p>
+                        <p>Outcome: @currency($outcome)</p>
+                    </div>
                     <div class="d-flex">
-                        
+                        <div class="text-muted">
+                            Search:
+                            <div class="ms-2 d-inline-block">
+                                <input type="text" id="search" class="form-control" aria-label="Search Project" placeholder="find project by description...">
+                            </div>
+                        </div>
+                        <div class="ms-auto me-3">
+                            <div class="text-muted">
+                                Show
+                                <div class="mx-2 d-inline-block">
+                                    <input type="number" id="data_count_shows" class="form-control" value="5" size="3"
+                                           aria-label="Invoices count">
+                                </div>
+                                entries
+                            </div>
+                        </div>
+
                         <div class="col col-lg-auto">
                             <button type="button" class="btn fontambah_incomet-weight-bolder" data-bs-toggle="modal"
                                 data-bs-target="#tambah_income">
@@ -146,7 +167,7 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label
-                                                            class="form-label  
+                                                            class="form-label
                                                             required">Category</label>
                                                         <select class="form-select" name="category" required>
                                                             <option value="advertising"
@@ -492,6 +513,47 @@
                 </form>
             </div>
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#data_count_shows').on('input',function() {
+                    var count_shows = $(this).val();
+                    // update the table and the pagination
+                    $.ajax({
+                        url: "{{ route('workspace.transaction.show') }}",
+                        type: 'GET',
+                        data: {
+                            data_count_shows: count_shows
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            var newTable = $(response).find('.datatable');
+                            var newPagination = $(response).find('.pagination');
+                            $('.datatable').html(newTable.html());
+                            $('.pagination').html(newPagination.html());
+                        }
+                    });
+                });
+
+                $('#search').on('input',function() {
+                    var search = $(this).val();
+                    // update only the table
+
+                    $.ajax({
+                        url: "{{ route('workspace.transaction.show') }}",
+                        type: 'GET',
+                        data: {
+                            search: search
+                        },
+                        success: function(response) {
+                            var newTable = $(response).find('.datatable');
+                            $('.datatable').html(newTable.html());
+                        }
+                    });
+
+                });
+            });
+        </script>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 @endsection

@@ -13,8 +13,38 @@ use Illuminate\Database\Query\Builder;
 
 class AdminTranscationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $freelances = User::where('id_role', 3)->orWhere('id_role', 4)->get();
+        $subscriptions = Subscription::all();
+
+        // if the request has data_count_shows
+        if ($request->input('data_count_shows') != null) {
+            $data_count_shows = $request->input('data_count_shows');
+            $transactions = DB::table('transaction_admins')
+                ->join('subscriptions', 'transaction_admins.id_subscription', '=', 'subscriptions.id')
+                ->join('users', 'subscriptions.id_user', '=', 'users.id')
+                ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
+                ->select('transaction_admins.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
+                ->orderBy('transaction_admins.created_at', 'desc')
+                ->paginate($data_count_shows);
+            return view('admin.transaction.index', compact('transactions', 'freelances', 'subscriptions'));
+        }
+        // if the request has search
+        if ($request->input('search') != null) {
+            $search = $request->input('search');
+            $transactions = DB::table('transaction_admins')
+                ->join('subscriptions', 'transaction_admins.id_subscription', '=', 'subscriptions.id')
+                ->join('users', 'subscriptions.id_user', '=', 'users.id')
+                ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
+                ->select('transaction_admins.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
+                ->orderBy('transaction_admins.created_at', 'desc')
+                ->where('users.fullname', 'LIKE', "%{$search}%")
+                ->paginate(5);
+            return view('admin.transaction.index', compact('transactions', 'freelances', 'subscriptions'));
+        }
+
+
         // desc
         $transactions = DB::table('transaction_admins')
         ->join('subscriptions', 'transaction_admins.id_subscription', '=', 'subscriptions.id')
@@ -24,8 +54,7 @@ class AdminTranscationController extends Controller
         ->orderBy('transaction_admins.created_at', 'desc')
         ->paginate(5);
         // get id role 3 or 4
-        $freelances = User::where('id_role', 3)->orWhere('id_role', 4)->get();
-        $subscriptions = Subscription::all();
+
         return view('admin.transaction.index', compact('transactions', 'freelances', 'subscriptions'));
     }
 

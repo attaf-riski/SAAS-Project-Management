@@ -16,16 +16,41 @@ use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $freelances = User::where('id_role', 3)->orWhere('id_role',4)->get();
+        $plans = Plan::all();
+
+        // if the request has data_count_shows
+        if ($request->input('data_count_shows') != null) {
+            $data_count_shows = $request->input('data_count_shows');
+            $subscriptions = DB::table('subscriptions')
+                ->join('users', 'subscriptions.id_user', '=', 'users.id')
+                ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
+                ->select('subscriptions.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
+                ->orderBy('subscriptions.created_at', 'desc')
+                ->paginate($data_count_shows);
+            return view('admin.subscription.index', compact('subscriptions', 'freelances', 'plans'));
+        }
+        // if the request has search
+        if ($request->input('search') != null) {
+            $search = $request->input('search');
+            $subscriptions = DB::table('subscriptions')
+                ->join('users', 'subscriptions.id_user', '=', 'users.id')
+                ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
+                ->select('subscriptions.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
+                ->where('users.fullname', 'LIKE', '%' . $search . '%')
+                ->orderBy('subscriptions.created_at', 'desc')
+                ->paginate(5);
+            return view('admin.subscription.index', compact('subscriptions', 'freelances', 'plans'));
+        }
         $subscriptions = DB::table('subscriptions')
             ->join('users', 'subscriptions.id_user', '=', 'users.id')
             ->join('plans', 'subscriptions.id_plan', '=', 'plans.id')
             ->select('subscriptions.*', 'users.fullname as fullname', 'plans.plan_name as plan_name')
             ->orderBy('subscriptions.created_at', 'desc')
             ->paginate(5);
-        $freelances = User::where('id_role', 3)->get();
-        $plans = Plan::all();
+
         return view('admin.subscription.index', compact('subscriptions', 'freelances', 'plans'));
     }
 
@@ -230,7 +255,7 @@ class SubscriptionController extends Controller
             // Set 3DS transaction for credit card to true
             \Midtrans\Config::$is3ds = config('midtrans.is3ds');
 
-            
+
             $params = array(
                 'transaction_details' => array(
                     'order_id' => rand(),
@@ -241,7 +266,7 @@ class SubscriptionController extends Controller
                     'email' => Auth::user()->email,
                 ),
             );
-            
+
             $snapToken = \Midtrans\Snap::getSnapToken($params);
             $dataTransaction['snap_token'] = $snapToken;
 
@@ -260,7 +285,7 @@ class SubscriptionController extends Controller
             if ($transactionAdmin) {
                 return redirect()->route('workspace.subscriptions.bayar', $transactionAdmin->id);
             }
-            
+
         } else {
             Alert::error('Failed Message', 'You have failed to upgrade.');
             return redirect()->route('workspace.subscriptions.upgradeshow');

@@ -2,20 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\ProjectModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::where('id_user', Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
+        // find income this month
+        $income = Transaction::where('is_income',1)
+            ->where('created_at', '>=', Carbon::now()->startOfMonth())
+            ->where('created_at', '<=', Carbon::now()->endOfMonth())
+            ->sum('amount');
+
+        $outcome = Transaction::where('is_income',0)
+            ->where('created_at', '>=', Carbon::now()->startOfMonth())
+            ->where('created_at', '<=', Carbon::now()->endOfMonth())
+            ->sum('amount');
+
         $projectlist = ProjectModel::where('user_id', Auth::user()->id)->get();
-        return view('workspace.transaction.index', compact('transactions', 'projectlist'));
+
+
+        // if the request has data_count_shows
+        if ($request->input('data_count_shows') != null) {
+            $dataCountShows = $request->input('data_count_shows');
+            $transactions = Transaction::where('id_user', Auth::id())->orderBy('created_at','desc')->paginate($dataCountShows);
+
+            return view('workspace.transaction.index', compact('transactions', 'projectlist', 'income', 'outcome'));
+
+        }
+
+        // if the request has search
+        if ($request->input('search') != null) {
+            $transactions = Transaction::where('id_user', Auth::id())->where('description', 'like', '%' . $request->search . '%')->paginate(5);
+            return view('workspace.transaction.index', compact('transactions', 'projectlist', 'income', 'outcome'));
+        }
+
+
+        $transactions = Transaction::where('id_user', Auth::user()->id)->orderBy('created_at', 'desc')->paginate(5);
+        return view('workspace.transaction.index', compact('transactions', 'projectlist', 'income', 'outcome'));
     }
 
     public function store(Request $request)

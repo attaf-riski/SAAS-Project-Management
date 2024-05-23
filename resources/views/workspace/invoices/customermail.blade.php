@@ -37,14 +37,14 @@
                     <p>Client address: {{ $client->address }}</p>
                     <p>State: {{ $client->state }}, City: {{ $client->city }}<br></p>
                     <p>Regioin: {{ $client->region }}, Postal Code: {{ $client->postal_code }}<br></p>
-                    <p>Email: {{ $invoice->email }}</p>
+                    <p>Email: {{ $client->email }}</p>
 
                 </div>
             </div>
 
             <div>
                 <p>Issued Date: {{ $invoice->issued_date }}</p>
-                <p style="color: red;">Due Date Payment: {{ $invoice->due_date }}</p>
+{{--                <p style="color: red;">Due Date Payment: {{ $invoice->due_date }}</p>--}}
             </div>
 
             @csrf

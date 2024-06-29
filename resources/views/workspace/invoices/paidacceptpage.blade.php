@@ -23,7 +23,7 @@
                 </div>
                 <!-- Page body -->
                 <div class="page-body">
-                    Anda melakukan pembayaran sebesar Rp. @currency({{$invoice->total}}). Untuk memulai proyek ini. Silahkan
+                    Anda melakukan pembayaran sebesar Rp. {{$invoice->total}}. Untuk memulai proyek ini. Silahkan
                     melakukan pembayaran :
                     <button id="pay-button" type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">

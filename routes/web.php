@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\TransactionController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Models\Client;
@@ -64,8 +66,25 @@ Route::get('/loginadmin', [UserController::class, 'loginadmin'])->name('loginadm
 Route::get('/register', [UserController::class, 'register'])->name('register')->middleware('guest');
 Route::post('/register-proses', [UserController::class, 'register_proses'])->name('register-proses')->middleware('guest');
 
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
 
-Route::group(['prefix' => 'workspace', 'middleware' => ['auth'], 'as' => 'workspace.'], function () {
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/login');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+
+Route::group(['prefix' => 'workspace', 'middleware' => ['auth','verified'], 'as' => 'workspace.'], function () {
 
     Route::get('/dashboard', [WorkspaceDashboardController::class, 'index'])->name('dashboard');
 
@@ -112,7 +131,7 @@ Route::group(['prefix' => 'workspace', 'middleware' => ['auth'], 'as' => 'worksp
     Route::put('/projects/update/{id}', [ProjectController::class, 'update'])->name('projects.update');
     Route::put('/projects/status/endproject/{id}', [ProjectController::class, 'endproject'])->name('projects.endproject');
     Route::put('/projects/status/unendproject/{id}', [ProjectController::class, 'unendproject'])->name('projects.unendproject');
-    
+
     // quotations
     Route::get('/quotation', [QuotationController::class, 'index'])->name('quotation');
     Route::get('/quotation/showadd', [QuotationController::class, 'showadd'])->name('quotation.showadd');
@@ -144,8 +163,8 @@ Route::group(['prefix' => 'workspace', 'middleware' => ['auth'], 'as' => 'worksp
     Route::put('/contract/update/{id}', [ContractController::class, 'update'])->name('contract.update');
     Route::get('/contract/showeditterm/{id}', [ContractController::class,'showeditterm'])->name('contract.showeditterm');
     Route::put('/contract/editterm/{id}', [ContractController::class,'editterm'])->name('contract.editterm');
-    Route::delete('/contract/deleteContract/{id}', [ContractController::class, 'deleteContract'])->name('contract.deleteContract');    
-    
+    Route::delete('/contract/deleteContract/{id}', [ContractController::class, 'deleteContract'])->name('contract.deleteContract');
+
     // invoice
     Route::get('/invoice', [InvoiceController::class, 'index'])->name('invoice');
     Route::get('/invoice/show/{id}', [InvoiceController::class, 'showId'])->name('invoices.show');
@@ -167,14 +186,14 @@ Route::group(['prefix' => 'workspace', 'middleware' => ['auth'], 'as' => 'worksp
     });
     Route::get('/invoice/sendemail/{id}',[InvoiceController::class,'sendemail'])->name('invoice.sendemail');
     Route::post('/invoice/finishemail/{id}', [InvoiceController::class, 'finishemail'])->name('invoice.finishemail');
-    
+
     // Route::post('/invoice/create/')
     // End Post
 
     // settings
 
     Route::get('/invoice/review/', [InvoiceController::class, 'review'])->name('invoices.review');
-    
+
     // change password
     Route::get('/settings/changepassword', [UserController::class, 'changePasswordShow'])->name('settings.changepassword');
     Route::post('/settings/password', [UserController::class, 'changePassword'])->name('settings.password');

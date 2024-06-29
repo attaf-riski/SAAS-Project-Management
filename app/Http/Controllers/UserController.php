@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,25 +23,32 @@ class UserController extends Controller
 {
     public function login(){
         return view('authentication.login');
-    } 
+    }
 
     public function login_proses(Request $request){
         $validator = Validator::make($request->all(), [
             'email_or_name' => ['required'],
             'password' => ['required'],
         ]);
-    
+
         if ($validator->fails()) {
             return redirect()->route('login')
                         ->withErrors($validator)
                         ->withInput();
         }
-    
+
         $credentials = $request->only('email_or_name', 'password');
-    
+
         if (Auth::attempt(['email' => $credentials['email_or_name'], 'password' => $credentials['password']]) ||
             Auth::attempt(['fullname' => $credentials['email_or_name'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
+
+            if(!(Auth::user()->hasVerifiedEmail())){
+                return redirect()->route('login')->with('failed','Email tolong diverifikasi dahulu');
+            }
+
+
+
             if(Auth::user()->id_role == 1){
                 return redirect()->route('superadmin.dashboard');
             } else if(Auth::user()->id_role == 2){
@@ -76,11 +84,11 @@ class UserController extends Controller
             return redirect()->route('login')->with('failed','Email atau Password Salah');
         }
     }
-    
+
     public function forgotPasswordShow() {
         return view('authentication.forgot-password');
     }
-    
+
     public function forgotPassword(Request $request) {
     $request->validate(['email' => 'required|email']);
 
@@ -114,7 +122,7 @@ class UserController extends Controller
         return view('authentication.reset-password', ['token' => $token]);
 
     }
-    
+
     public function resetPasswordProses(Request $request) {
         $request->validate([
             'token' => 'required',
@@ -122,7 +130,7 @@ class UserController extends Controller
             'password' => 'required|min:6', // Memastikan password baru berbeda dengan password saat ini
             'confirmPassword' => 'required|same:password',
         ]);
-        
+
         // Gunakan Password::reset untuk mengubah password
         $status = Password::reset(
             $request->only('email', 'password', 'token'),
@@ -132,7 +140,7 @@ class UserController extends Controller
                 $user->save();
             }
         );
-        
+
         // Periksa status reset
         if ($status === Password::PASSWORD_RESET) {
             return redirect()->route('login')->with('success', 'Password has been reset successfully');
@@ -140,7 +148,7 @@ class UserController extends Controller
             return back()->withInput($request->only('email'))->withErrors(['email' => [__($status)]]);
         }
     }
-    
+
 
     public function register(){
         return view('authentication.register');
@@ -169,12 +177,13 @@ class UserController extends Controller
         $data['organization'] = "notset";
         $data['status'] = "Active";
         $data['photo_profile'] = $defaultProfilePath;
-        
+
 
         if(!$data){
             dd('error');
         }else{
             $result = User::create($data);
+            event(new Registered($result));
             if($result){
                 // make subscription and transaction
                 $subscription = [
@@ -198,13 +207,12 @@ class UserController extends Controller
                 ];
 
                 DB::table('transaction_admins')->insert($transaction);
-                Alert::success('Success Message', 'Register Success');
-                return redirect()->route('login')->with('success','Register Success');
+                return redirect()->route('login')->with('success','Register Success, Please Verify your email');
             }else{
                 Alert::error('Failed Message', 'Register Failed');
                 return redirect()->route('register')->with('failed','Register Failed');
             }
-            
+
         }
     }
 
@@ -214,7 +222,7 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-        
+
 
 
          // if the request has data_count_shows
@@ -259,7 +267,7 @@ class UserController extends Controller
         $data['experience_level'] = 0;
         $data['organization'] = "notset";
         $data['photo_profile'] = "https://png.pngtree.com/png-vector/20220628/ourmid/pngtree-user-profile-avatar-vector-admin-png-image_5289693.png";
-        
+
 
         if(!$data){
             dd('error');
@@ -272,7 +280,7 @@ class UserController extends Controller
                 Alert::error('Failed Message', 'You have failed add new freelance.');
                 return redirect()->route('admin.user.show');
             }
-            
+
         }
     }
 
@@ -342,7 +350,7 @@ class UserController extends Controller
             User::find($id)->update($data);
             Alert::success('Success Message', 'You have successfully update admin.');
             return redirect()->route('admin.user.show');
-        }    
+        }
     }
 
     public function usersetting(){
@@ -470,7 +478,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->newPassword);
             $user->save();
             Alert::success('Success Message', 'You have successfully change password.');
-            
+
             if(Auth::user()->id_role == 1){
                 return redirect()->route('superadmin.settings.changepassword');
             } else if(Auth::user()->id_role == 2){

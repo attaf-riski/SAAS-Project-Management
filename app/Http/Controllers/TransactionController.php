@@ -19,11 +19,13 @@ class TransactionController extends Controller
         $income = Transaction::where('is_income',1)
             ->where('created_at', '>=', Carbon::now()->startOfMonth())
             ->where('created_at', '<=', Carbon::now()->endOfMonth())
+            ->where('id_user', Auth::user()->id)
             ->sum('amount');
 
         $outcome = Transaction::where('is_income',0)
             ->where('created_at', '>=', Carbon::now()->startOfMonth())
             ->where('created_at', '<=', Carbon::now()->endOfMonth())
+            ->where('id_user', Auth::user()->id)
             ->sum('amount');
 
         $projectlist = ProjectModel::where('user_id', Auth::user()->id)->get();
